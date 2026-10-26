@@ -1,0 +1,240 @@
+None selected 
+
+Skip to content
+Using Gmail with screen readers
+
+Conversations
+
+is:starred
+ 
+1–8 of 8
+ 
+is:drafts
+ 
+Inbox
+14% of 2,048 GB used
+Terms · Privacy · Program Policies
+Last account activity: 20 minutes ago
+Details
+lift_platform_visualiser.html
+100%
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lift platform visualiser</title>
+<style>
+:root{
+  --bg:#f4f1ea; --panel:#fbf9f4; --ink:#1d2a33; --muted:#66727a; --grid:#d9d3c6;
+  --link:#c2410c; --deck:#1d4e89; --base:#8a8f94; --accent:#c2410c;
+  --ok:#2f7d4f; --warn:#b7791f; --bad:#b42318; --line:#cfc8b8;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1b2a; --panel:#13243a; --ink:#e6eef7; --muted:#8ea3b8; --grid:#1f3652;
+    --link:#ff9f43; --deck:#5aa9ff; --base:#51657a; --accent:#ff9f43;
+    --ok:#4ade80; --warn:#fbbf24; --bad:#f87171; --line:#25405f; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1b2a; --panel:#13243a; --ink:#e6eef7; --muted:#8ea3b8; --grid:#1f3652;
+  --link:#ff9f43; --deck:#5aa9ff; --base:#51657a; --accent:#ff9f43;
+  --ok:#4ade80; --warn:#fbbf24; --bad:#f87171; --line:#25405f; color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.45 "Avenir Next","Segoe UI",system-ui,sans-serif;
+  padding:max(16px,env(safe-area-inset-top)) 16px 24px}
+.mono{font-family:ui-monospace,"SF Mono","Cascadia Mono",Menlo,monospace}
+.wrap{max-width:980px;margin:0 auto}
+h1{font-size:20px;margin:0 0 2px;letter-spacing:.01em}
+.sub{color:var(--muted);margin:0 0 14px;font-size:13px}
+.stage{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px}
+svg{display:block;width:100%;height:auto}
+.grid{display:grid;grid-template-columns:1.1fr 1fr;gap:14px;margin-top:14px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+.card h2{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin:0 0 10px;font-weight:600}
+.row{margin:0 0 12px}
+.row label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px}
+.row output{font-family:ui-monospace,Menlo,monospace;color:var(--accent)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+button{font:inherit;font-size:13px;padding:7px 12px;border-radius:7px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);cursor:pointer}
+button:hover{border-color:var(--accent)}
+button.on{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.chk{display:flex;gap:8px;align-items:center;font-size:13px;margin:2px 0 12px}
+.read{display:grid;grid-template-columns:1fr auto;gap:5px 10px;font-size:13px}
+.read span:nth-child(odd){color:var(--muted)}
+.read span:nth-child(even){text-align:right}
+.chip{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:600;border:1px solid currentColor}
+.ok{color:var(--ok)} .warn{color:var(--warn)} .bad{color:var(--bad)}
+.note{font-size:12px;color:var(--muted);margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Lift platform visualiser</h1>
+  <p class="sub">Four-bar linkage, front view: two actuator-driven cranks (l₁, l₃) carry the deck (l₂). Move the sliders to see what sync means.</p>
+
+  <div class="stage">
+    <svg id="svg" viewBox="0 0 820 400" role="img" aria-label="Front view of the four-bar lift platform"></svg>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Actuators</h2>
+      <div class="row"><label for="xl">Left actuator extension <output id="oxl"></output></label>
+        <input id="xl" type="range" min="0" max="100" step="0.5" value="30"></div>
+      <div class="row"><label for="xr">Right actuator extension <output id="oxr"></output></label>
+        <input id="xr" type="range" min="0" max="100" step="0.5" value="30"></div>
+      <label class="chk"><input id="lock" type="checkbox" checked> Lock together (perfect sync)</label>
+      <h2>Geometry</h2>
+      <div class="row"><label for="len">Crank length l₁ = l₃ <output id="olen"></output></label>
+        <input id="len" type="range" min="120" max="300" step="5" value="220"></div>
+      <div class="row"><label for="dist">Base spacing AD = l₂ <output id="odist"></output></label>
+        <input id="dist" type="range" min="250" max="520" step="5" value="400"></div>
+      <div class="btns">
+        <button id="sweep">Sweep demo</button>
+        <button id="skew">Skew 15 mm</button>
+        <button id="reset">Reset</button>
+        <button id="theme">Light / dark</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Readout</h2>
+      <div class="read mono">
+        <span>Mean extension H</span><span id="rH"></span>
+        <span>Mismatch xL − xR</span><span id="rE"></span>
+        <span>Crank angles α₁ / α₂</span><span id="rA"></span>
+        <span>Deck height (B, C mean)</span><span id="rZ"></span>
+        <span>Deck tilt</span><span id="rT"></span>
+        <span>Deck length error |BC| − l₂</span><span id="rS"></span>
+      </div>
+      <p style="margin:12px 0 4px"><span id="chip" class="chip"></span></p>
+      <p class="note">Status uses the firmware thresholds: warn above 4 mm mismatch, latched fault above 12 mm. A rigid deck can’t follow two cranks at different angles, so the length error is the stress the mechanism would carry. Actuator-to-angle mapping is an assumed linear 20°–70° over the stroke; replace it with your real geometry.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const STROKE = 100, A_MIN = 20, A_MAX = 70;            // deg over full stroke (assumed)
+const WARN = 4, FAULT = 12;                             // mm, same as firmware
+const NS = 'http://www.w3.org/2000/svg';
+const svg = $('svg');
+const BASE_Y = 330, AX = 180;
+
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const el = (tag, attrs, parent = svg) => {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  parent.appendChild(e); return e;
+};
+const rad = d => d * Math.PI / 180;
+
+function draw() {
+  const xl = +$('xl').value, xr = +$('xr').value, L = +$('len').value, D = +$('dist').value;
+  const a1 = A_MIN + xl / STROKE * (A_MAX - A_MIN);
+  const a2 = A_MIN + xr / STROKE * (A_MAX - A_MIN);
+  // Both cranks lean the same way (as in the diagram): equal extension gives a parallelogram.
+  const A = {y: AX, z: 0}, Dp = {y: AX + D, z: 0};
+  const B = {y: A.y + L * Math.cos(rad(a1)), z: L * Math.sin(rad(a1))};
+  const C = {y: Dp.y + L * Math.cos(rad(a2)), z: L * Math.sin(rad(a2))};
+  const px = p => [p.y, BASE_Y - p.z];
+
+  // readouts
+  const H = (xl + xr) / 2, e = xl - xr;
+  const bc = Math.hypot(C.y - B.y, C.z - B.z), strain = bc - D;
+  const tilt = Math.atan2(C.z - B.z, C.y - B.y) * 180 / Math.PI;
+  $('oxl').textContent = xl.toFixed(1) + ' mm'; $('oxr').textContent = xr.toFixed(1) + ' mm';
+  $('olen').textContent = L + ' mm'; $('odist').textContent = D + ' mm';
+  $('rH').textContent = H.toFixed(1) + ' mm'; $('rE').textContent = e.toFixed(1) + ' mm';
+  $('rA').textContent = a1.toFixed(1) + '° / ' + a2.toFixed(1) + '°';
+  $('rZ').textContent = ((B.z + C.z) / 2).toFixed(0) + ' mm';
+  $('rT').textContent = tilt.toFixed(1) + '°';
+  $('rS').textContent = (strain >= 0 ? '+' : '') + strain.toFixed(1) + ' mm';
+  const m = Math.abs(e), chip = $('chip');
+  chip.className = 'chip ' + (m > FAULT ? 'bad' : m > WARN ? 'warn' : 'ok');
+  chip.textContent = m > FAULT ? 'SYNC FAULT: motors would latch off' : m > WARN ? 'SYNC WARNING: correction active' : 'IN SYNC';
+
+  // scene
+  svg.textContent = '';
+  const ink = css('--ink'), muted = css('--muted'), grid = css('--grid'),
+        link = css('--link'), deck = css('--deck'), basec = css('--base'), acc = css('--accent');
+  for (let g = 0; g <= 820; g += 40) el('line', {x1: g, y1: 0, x2: g, y2: 400, stroke: grid, 'stroke-width': .6});
+  for (let g = 0; g <= 400; g += 40) el('line', {x1: 0, y1: g, x2: 820, y2: g, stroke: grid, 'stroke-width': .6});
+  // ground + pedestals
+  el('line', {x1: 20, y1: BASE_Y + 22, x2: 800, y2: BASE_Y + 22, stroke: basec, 'stroke-width': 3});
+  [A, Dp].forEach(p => el('path', {d: `M${p.y - 42} ${BASE_Y + 22} L${p.y - 14} ${BASE_Y + 4} L${p.y + 14} ${BASE_Y + 4} L${p.y + 42} ${BASE_Y + 22} Z`, fill: basec, opacity: .55}));
+  // level reference through B
+  el('line', {x1: B.y - 30, y1: px(B)[1], x2: C.y + 30, y2: px(B)[1], stroke: muted, 'stroke-dasharray': '4 5', 'stroke-width': 1});
+  // cranks
+  const [Ax, Ay] = px(A), [Dx, Dy] = px(Dp), [Bx, By] = px(B), [Cx, Cy] = px(C);
+  el('line', {x1: Ax, y1: Ay, x2: Bx, y2: By, stroke: link, 'stroke-width': 9, 'stroke-linecap': 'round'});
+  el('line', {x1: Dx, y1: Dy, x2: Cx, y2: Cy, stroke: link, 'stroke-width': 9, 'stroke-linecap': 'round'});
+  // deck (colour shifts when it would be stressed)
+  const stressed = Math.abs(strain) > 2;
+  el('line', {x1: Bx, y1: By, x2: Cx, y2: Cy, stroke: stressed ? css('--bad') : deck, 'stroke-width': 12, 'stroke-linecap': 'round'});
+  // joints + labels
+  const joint = (x, y, t, dx, dy) => {
+    el('circle', {cx: x, cy: y, r: 7, fill: css('--panel'), stroke: ink, 'stroke-width': 2.5});
+    const tx = el('text', {x: x + dx, y: y + dy, fill: ink, 'font-size': 15, 'font-weight': 700, 'text-anchor': 'middle'}); tx.textContent = t;
+  };
+  joint(Ax, Ay, 'A', -20, 22); joint(Dx, Dy, 'D', -20, 22); joint(Bx, By, 'B', -18, -12); joint(Cx, Cy, 'C', 18, -12);
+  // angle arcs
+  const arc = (cx, cy, a, mirror) => {
+    const r = 46, x2 = cx + r * Math.cos(rad(a)), y2 = cy - r * Math.sin(rad(a));
+    el('path', {d: `M${cx + r} ${cy} A${r} ${r} 0 0 0 ${x2} ${y2}`, fill: 'none', stroke: acc, 'stroke-width': 1.8});
+  };
+  arc(Ax, Ay, a1); arc(Dx, Dy, a2);
+  const t1 = el('text', {x: Ax + 56, y: Ay - 10, fill: acc, 'font-size': 13}); t1.textContent = 'α₁';
+  const t2 = el('text', {x: Dx + 56, y: Dy - 10, fill: acc, 'font-size': 13}); t2.textContent = 'α₂';
+  const lt = (x, y, t) => { const q = el('text', {x, y, fill: muted, 'font-size': 13, 'text-anchor': 'middle'}); q.textContent = t; };
+  lt((Ax + Bx) / 2 - 22, (Ay + By) / 2, 'l₁'); lt((Dx + Cx) / 2 + 24, (Dy + Cy) / 2, 'l₃');
+  lt((Bx + Cx) / 2, Math.min(By, Cy) - 16, 'l₂ (deck)');
+  // actuator gauges
+  const gauge = (x, v, name) => {
+    el('rect', {x: x - 40, y: BASE_Y + 36, width: 80, height: 10, rx: 3, fill: 'none', stroke: muted});
+    el('rect', {x: x - 40, y: BASE_Y + 36, width: 80 * v / STROKE, height: 10, rx: 3, fill: acc});
+    const q = el('text', {x, y: BASE_Y + 62, fill: muted, 'font-size': 12, 'text-anchor': 'middle'}); q.textContent = `${name} ${v.toFixed(1)} mm`;
+  };
+  gauge(Ax, xl, 'left'); gauge(Dx, xr, 'right');
+  // tilt label
+  const tl = el('text', {x: (Bx + Cx) / 2, y: Math.max(By, Cy) + 30, fill: ink, 'font-size': 13, 'text-anchor': 'middle'});
+  tl.textContent = `tilt ${tilt.toFixed(1)}°`;
+}
+
+// controls
+function onLeft()  { if ($('lock').checked) $('xr').value = $('xl').value; draw(); }
+function onRight() { if ($('lock').checked) $('xl').value = $('xr').value; draw(); }
+$('xl').oninput = onLeft; $('xr').oninput = onRight;
+$('lock').onchange = () => { if ($('lock').checked) $('xr').value = $('xl').value; draw(); };
+$('len').oninput = $('dist').oninput = draw;
+$('skew').onclick = () => { $('lock').checked = false; $('xr').value = Math.max(0, Math.min(100, +$('xl').value - 15)); draw(); };
+$('reset').onclick = () => { stopSweep(); $('xl').value = $('xr').value = 30; $('len').value = 220; $('dist').value = 400; $('lock').checked = true; draw(); };
+$('theme').onclick = () => {
+  const r = document.documentElement, dark = getComputedStyle(r).getPropertyValue('color-scheme').includes('dark');
+  r.setAttribute('data-theme', dark ? 'light' : 'dark'); draw();
+};
+let timer = null;
+function stopSweep() { clearInterval(timer); timer = null; $('sweep').classList.remove('on'); }
+$('sweep').onclick = () => {
+  if (timer) return stopSweep();
+  $('sweep').classList.add('on'); let t = 0;
+  timer = setInterval(() => {
+    t += 0.03; const v = 50 + 50 * Math.sin(t);
+    $('xl').value = v;
+    if ($('lock').checked) $('xr').value = v; else $('xr').value = 50 + 50 * Math.sin(t - 0.35);
+    draw();
+  }, 30);
+};
+draw();
+</script>
+</body>
+</html>
+Displaying lift_platform_visualiser.html.
