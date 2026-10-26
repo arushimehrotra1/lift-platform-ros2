@@ -1,0 +1,8 @@
+.tools/
+.arduino/
+.build/
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+tools/sim/fw_sim
+__pycache__/
